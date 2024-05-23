@@ -1,1 +1,518 @@
+#include <stdio.h>
+#include <stdlib.h> // for perror and other
+#include <string.h> 
+#include <time.h> //for time
+#include <fcntl.h> // to handle files
+#include <unistd.h> // read et write
 
+
+//siège vip??
+
+
+// Les structures : 
+
+typedef struct {   //on définit la structure Siège		
+	int reservation; //true ou flase
+  char catégorie;
+} Siège;
+
+typedef struct{		
+  int nbrSiège;
+  Siège* tabSiège;
+  char catégorie;	//'A', 'B' ou 'C'
+  double prixA;
+  double prixB;
+  double prixC;
+} Rangée;
+
+typedef struct { //on définit la structure Salle
+	char nom[50];
+  int nbrRangée;
+  struct tm heure_fin; //pour le temps
+  Rangée*  tabRangée ;
+} Salle;
+
+
+// Les procédures pour les modes manager et festivalier :
+
+void ecrireSalleFichiers(const char *nomdufichier, const Salle *salle) {
+    FILE *fic = fopen("nomdufichier", "w");
+    if (file == NULL) {
+        printf("Erreur");
+        exit(1);
+    }
+  
+    fprintf(fic, "%s\n", salle->nom);
+    fprintf(fic, "%d\n", salle->nbrRangée);
+  
+    for (int i = 0; i < salle->nbrRangée; i++){
+        fprintf(fic, "%d\n", salle->rangees[i].nbrSiège);
+      
+        for (int j = 0; j < salle->tabRangées[i].nbrSiège; j++) {
+            fprintf(fic, "%d %c\n", salle->tabRangée[i].tabSiège[j].réservation, salle->tabRangée[i].tabSiège[j].catégorie);
+        }
+      
+        fprintf(fic, "%c %lf\n", salle->tabRangée[i].categorie, salle->tabRangée[i].prix);
+    }
+  
+    fprintf(fic, "%d %d %d %d %d %d\n", salle->heure_fin.tm_year + 1900, salle->heure_fin.tm_mon + 1, salle->heure_fin.tm_mday, salle->heure_fin.tm_hour, salle->heure_fin.tm_min, salle->heure_fin.tm_sec);
+   
+  	fclose(fic);
+}
+
+void lireSalleFichiers(const char *nomdufichier, Salle* salle){
+  FILE* fic = NULL; 
+  fic = fopen("nomdufichier", "r");
+  
+  if (fic == NULL){
+    printf("Erreur");
+    exit(1);
+  }
+
+    fscanf(fic, "%[^\n]n", salle->nom);
+    fscanf(fic, "%d\n", &salle->nbrRangée);
+    
+    salle->tabRangée = (Rangée*)malloc(salle->nbrRangée*sizeof(Rangée));
+  
+    if(salle->tabRangée == NULL){
+      printf("Allocation échouée");
+    	exit(2);
+    }
+		
+    for(int i = 0; i<salle->nbrRangée; i++){
+      fscanf(fic, "%d\n", &salle->tabRangée[i].nbrsiège);
+      
+      salle->tabRangée[i].nbrsiège = (Siège*)malloc(salle->tabRangée[i].nbrsiège*sizeof(Siège));
+      
+      	if(salle->tabRangée[i].nbrsiège == NULL){
+     	 		printf("Allocation échouée");
+    	 		exit(3);
+     		}
+      
+     		for (int j = 0; j<salle->tabRangée[i].nbrsiège; j++){
+      	 fscanf(fic, "%d %c\n", &salle->tabRangée[i].nbrsiège[j].réservation, &salle->tabRangée[i].nbrsiège[j].catégorie);
+    		}   
+      
+    		fscanf(file, " %c %lf\n", &salle->tabRangée[i].categorie, &salle->tabRangée[i].prix);
+    }
+  
+    fscanf(file, "%d %d %d %d %d %d\n", &salle->heure_fin.tm_year, &salle->heure_fin.tm_mon, &salle->heure_fin.tm_mday, &salle->heure_fin.tm_hour, &salle->heure_fin.tm_min, &salle->heure_fin.tm_sec);
+    salle->heure_fin.tm_year -= 1900;
+    salle->heure_fin.tm_mon -= 1;
+  
+    fclose(fic); 
+  
+  } 
+
+void modifierSalle(Salle *salle) {
+  
+    printf("Entrez le nouveau nombre de rangées: ");
+    scanf("%d", &salle->nbrRangée);
+    salle->tabRangée = (Rangée *)realloc(salle->tabRangée, salle->nbrRangée * sizeof(Rangée));
+  	//doit on faire une vérif que l'allocation a réussi ?
+  	
+  	if(salle->tabRangée == NULL){
+      printf("Erreur");
+      exit(1)
+    }
+
+    for (int i = 0; i < salle->nbrRangée; i++) {
+        printf("Entrez le nombre de sièges pour la rangée %d: ", i + 1);
+        scanf("%d", &salle->tabRangée[i].nbrSiège);
+        salle->tabRabgée[i].tzbSiège = (Siège *)realloc(salle->tabRangée[i].tabSiège, salle->tabRangée[i].nbrSiège * sizeof(Siège));
+       
+      	if (salle->tabRangée[i].tabSiège == NULL) {
+            printf("Erreur");
+            exit(2);
+        }
+      
+        for (int j = 0; j < salle->tabRangée[i]nbrSiège; j++) {
+            salle->tabRangée[i].tabSiège[j].réservation = 0;
+            salle->tabRangée[i].tabSiège[j].catégorie = 'A';
+        }
+      
+        printf("Entrez la catégorie pour la rangée %d: ", i + 1);
+        scanf(" %c", &salle->tabRangée[i].catégorie);
+        printf("Entrez le prix pour la catégorie %c pour la rangée %d: ", salle->tabRangée[i].catégorie, i + 1);
+        scanf("%lf", &salle->tabRangée[i].prix);
+    }
+
+    // Sauvegarder les modifications
+    char nomdufichier[100];
+    snprintf(nomdufichier, sizeof(nomdufichier), "data/%s.txt", salle->nom);
+    writeSalleToFile(nomdufichier, salle);
+}
+
+
+
+
+
+
+void afficherSalles() {
+    char nomdufichier[256];
+    Salle salle;
+
+    for (int i = 1; i <= 3; i++) {  // Supposons que nous avons 3 fichiers de salles
+        snprintf(nomdufichier, sizeof(nomdufichier), "data/salle%d.txt", i);
+        lireSalleFichier(nomdufichier, &salle);
+
+        printf("Nom de la salle: %s\n", salle.nom);
+        printf("Rangées et sièges:\n");
+        for (int j = 0; j < salle.nbrRangée; j++) {
+            for (int k = 0; k < salle.nbrSiège[j]; k++) {
+                Siège tabSiège = salle.tabSiège[j][k];
+                if (tabSiège.réservation) {
+                    printf(" X");
+                } else {
+                    printf(" 0");
+                }
+            }
+           printf(" %c\n", salle.tabSiège[j][0].catégorie);
+        }
+
+      double prixA; 
+      double prixB; 
+      double prixC; 
+      
+        printf("\nCatégories et prix:\n");
+        printf("Catégorie A: %.2f €\n", salle.prixA);
+        printf("Catégorie B: %.2f €\n", salle.prixB);
+        printf("Catégorie C: %.2f €\n", salle.prixC);
+
+        printf("Heure de fin du concert: %02d:%02d:%02d le %d-%02d-%02d\n", salle.heure_fin.tm_hour, salle.heure_fin.tm_min, salle.heure_fin.tm_sec,salle.heure_fin.tm_year + 1900, salle.heure_fin.tm_mon + 1, salle.heure_fin.tm_mday);
+    }
+}
+
+
+void modifierSalles()
+void créerSalles();
+void concertSalles();
+void étatSalles();
+void préReservationSalle();
+void réservation(); 
+
+ void temps(){ //permet de voir l'heure actuelle 
+  time_t now;
+  struct tm *local_time;
+  
+  now = time(NULL);
+  
+  local_time = localtime(&now); 
+  
+  printf("Date et heure locales actuelles : %s\n", asctime(local_time));
+} 
+
+void vide_buffer(){
+  while(getchar() != '\n' && x != EOF); 
+}
+
+
+void heureConcert(){
+    time_t now = time(NULL);
+
+    // Comparer l'heure actuelle avec l'heure de fin du concert
+    return difftime(now, mktime(&salle->heure_fin)) >= 0;
+  
+}
+
+	
+salle creationSalle(){
+  
+  salle a;
+  int catA, catC, pA, pC;
+  
+  /*
+  printf("Entrez le nom de la salle : ");																													//partie ChatGPT pour éviter de rentrer un nom de salle qui dépasse le tableau 
+    fgets(nomSalle, tailleMax, stdin);
+
+    // Supprimer le caractère de nouvelle ligne (\n) de la fin de la chaîne si présent
+    if (strchr(nomSalle, '\n') != NULL) {
+        nomSalle[strcspn(nomSalle, "\n")] = '\0';
+    } else {
+        // Vider le tampon d'entrée si la saisie dépasse la capacité du tampon
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+}
+
+  if (strlen(maSalle.nom) == TAILLE_MAX_NOM) {
+        printf("Attention : Le nom de la salle dépasse la taille maximale autorisée.\n");
+        // Autre traitement en cas de nom trop long...
+    } else {
+        printf("Nom de la salle : %s\n", maSalle.nom);
+        // Autre traitement si le nom est valide.
+    */
+    
+    }  
+  printf("veuillez entrer le nom de la salle:");
+  scanf("%50s\n",&a.nom); //%50s fait ensorte que la taille du string ne depaase pas 50 char, voir amélioration pour enlever ce que l'utilisateur a écrit et demander de réécrire un nom 
+
+	printf("Combien de rangées voulez-vous ?");
+  scanf("%d\n", &a.nbrRangée);
+
+	a.tabRangée = malloc(8*nbrRangée); //on va crée n rangée souhaité par l'utilisateur
+   if(   ==NULL){
+      printf("Allocation échouée");
+      exit(1);
+    }
+
+	for(int i=0; i<a.nbrRangée; i++){
+    printf("veuillez entrer le nombre de siège pour la rangée %d:", i + 1);
+    scanf("%d\n", a.tabRangée[i].nbrsiège); 
+    a.tabRangée[i].tabsiège = malloc(a.tabRangée[i].nbrsiège*8);
+   
+    
+  
+	printf("veuillez entrer le nombre de rangée pour la catégorie A ainsi que leur prix:");  //scanf("%c\n", a.tabRangée[i].catégorie); 
+	scanf("%d %d\n",&catA, &pA);
+    
+	printf("veuillez entrer le nombre de rangée pour la catégorie C ainsi que leur prix:");  
+	scanf("%d %d\n",&catC, &pC);
+    
+	for(int i=0; i<a.nbrRangée; i++){
+    for(; catA > 0; catA--){ // for ou if?
+      
+    }    
+    
+    
+    a.tabRangée[i].prixcatégorie
+  }
+	/*printf("veuillez entrer le prix par catégorie");
+	scanf("%d\n",a.), besoin d'une boucle */
+  
+
+  //faire un truc qui demande combien de rangées pour la catégorie A et B (le reste va pour C) + prix 
+
+	int concert;
+  printf("Voulez-vous attribuer cette salle pour un concert ?"); //faire un truc qui dmd ça et s'il dit oui ça va doit la	 procédure concertSalle()
+  printf("Entrez 1 pour oui ou 2 pour non");
+	
+	do{
+	if(concert != 1 && concert != 2){
+      printf("Erreur. Entrée non valide. Veuillez réesayer s'il vous plaît.");
+    	  int x;
+  while((x = getchar()) != '\n' && x != EOF);;
+      continue; 
+   	 }
+  }while(concert != 1 && concert != 2);
+    
+	if(concert == 1){
+    concertSalle();
+  }else{
+    printf("Choix enregistrée.");
+  }
+  
+  
+}
+
+
+void concertSalle(Salle n){
+  
+  int f;
+  do{
+  printf("Voulez-vous une fosse ?, Entrer 1 pour oui, Entrer 2 pour non"); // voir les trucs avec le temps (faire des recherches pour voir comment utiliser)
+  scanf("%d\n", &f);
+    
+    if(f != 1 && f != 2){
+      printf("Erreur. Entrée non valide. Veuillez réesayer s'il vous plaît.");
+      clearbuffer();
+      continue; 
+   	 }
+    
+  	if(f == 1){
+    // à faire quand on aura terminer la structure
+    // remplacer A par fosse et il y a dcp deux fois plus de place
+  	}
+  	if(f == 2){
+    	printf("Vous avez choisi de ne pas ajouter de fosse.");
+  	}
+  	else{
+    	printf("Vous avez entré une valeur incorrecte. Veuillez réessayer.");
+  	}
+  } while(f != 1 && f != 2);
+  
+
+    int annee, mois, jour, heure, minute;
+
+    printf("Entrez l'heure de fin du concert pour la salle '%s'\n", n->nom);
+  
+    printf("Année : ");
+    scanf("%d", &annee);
+    printf("Mois : ");
+    scanf("%d", &mois);
+    printf("Jour : ");
+    scanf("%d", &jour);
+    printf("Heure : ");
+    scanf("%d", &heure);
+    printf("Minute : ");
+    scanf("%d", &minute);
+
+    // Initialiser la structure tm avec l'heure de fin du concert
+    salle->heure_fin.tm_year = annee - 1900; // année depuis 1900
+    salle->heure_fin.tm_mon = mois - 1;      // mois (0-11)
+    salle->heure_fin.tm_mday = jour;         // jour du mois (1-31)
+    salle->heure_fin.tm_hour = heure;        // heure (0-23)
+    salle->heure_fin.tm_min = minute;        // minute (0-59)
+    salle->heure_fin.tm_sec = 0;             // seconde (0-59)
+
+    // Convertir la structure tm en timestamp
+    time_t timestamp = mktime(&salle->heure_fin);
+    if (timestamp == -1) {
+        printf("Erreur : Heure de fin invalide.\n");
+    } else {
+        printf("Heure de fin du concert pour la salle '%s' définie avec succès.\n", salle->nom);
+    }
+
+    heureConcert();
+    
+  
+  
+}
+
+void étatSalle(){
+  
+	printf("Voici les concerts en cours : \n"); 
+  
+  
+  printf("Quelle salle voulez-vous observer ?"); 
+  
+  
+  //afficher tous les concerts pas finis puis après choix du manager, afficher la salle + ratio
+  
+  //faire un ratio : afficher le nb de sièges réservés / nb de sièges total (peut être à l'aide d'une boucle pour compter tous les X (= sièges réservés))
+  
+  
+  
+}
+
+
+
+void préRéservationSalle(){
+  
+  printf("Voici les concerts en cours : \n");
+  
+  // faire une boucle où on teste les salles 
+  
+    if (heureConcert(salle)) {
+        printf("Impossible de réserver des sièges. Le concert dans la salle '%s' est terminé.\n", salle->nom);
+        return;
+    } else {
+      printf("concert disponible :\n", salle.nom);
+    }
+  
+  
+  
+  
+  
+  int choix; 
+  printf("Pour quel concert voulez-vous réserver ? Entrez le nom du concert ou tapez 'menu' si vous souhaitez retourner au menu principal"); 
+ 	if //faire une vérif pour identifier quel concert ou si c'est écrit menu  
+
+    
+  // réservation :
+    
+void réservation(Salle* salle, int rangée, int siège){
+    
+      if ( rangée < 0 || rangée >= salle->nbrRangée || siège < 0 || siège >= salle.tabRangée->nbrSiège) {
+        printf("Rangée ou siège invalide.\n");
+        return;
+    }
+
+    if (salle->siège.réservation) {
+        printf("Ce siège est déjà réservé.\n");
+    } else {
+        salle->siège.reserved = 1;
+        printf("Réservation réussie.\n");
+    }
+
+        // Sauvegarder les modifications
+        char nomdufichier[50];
+        snprintf(nomdufichier, sizeof(nomdufichier), "data/%s.txt", salle->nom);
+        ecrireSalleFichier(nomdufichier, salle);
+    }
+    
+
+// Les trois menus principales :
+
+void menuPrincipal(){
+	int choix;
+  int verif;
+	do {																														//on demande à l'utilisateur à quel mode il veut accéder
+		printf ("Entrez 1 pour accéder au mode manager \n");					// mot de passe pour mode manager???
+		printf("Entrez 2 pour accéder au mode festivaler \n");
+		printf("Quel mode voulez-vous ?");
+		verif=scanf("%d", &choix);
+    vide_buffer();
+        
+		switch(choix){
+			case 1 :
+				manager();
+				break;
+			case 2 :
+				festivalier();
+				break;
+			default :
+				printf("Choix non valide. Veuillez réessayer s'il vous plaît.");
+    }    
+	} while(choix != 1 && choix != 2 || verif != 1); //on redemande à l'utilisateur jusqu'à qu'il fasse un choix valide
+}
+
+
+
+void manager(){
+  int choix;
+  int verif;
+  printf("Bienvenue dans l'interface manager,"); 
+  do { 
+		printf("Entrez 1 pour créer des salles de concert \n");
+ 	  printf("Entrez 2 pour attribuer une salle à un concert \n");
+  	printf("Entrez 3 pour observer l'état des salles \n");
+    printf("Entrez 4 pour retourner au menu princiapl \n");
+  	printf("Que souhaitez-vous faire ? \n");
+  	verif=scanf("%d", &choix);
+    vide_buffer();
+    
+  	switch(choix){
+    	case 1 :
+      	creationSalle();
+      	break;
+    	case 2 :
+      	concertSalle();
+      	break;
+    	case 3 :
+      	étatSalle();
+      	break;
+      case 4 :
+        choix();
+    	default :
+      	printf("Choix non valide. Veuillez réessayer s'il vous plaît.");
+  	}
+  } while(choix != 1 && choix != 2 && choix != 3 && choix != 4 || verif != 1); 
+}
+  
+
+}
+
+void festivalier(){
+  printf("Bienvenue dans l'interface festivalier !");
+  préRéservationSalle(); 
+  
+  // afficher les concerts qui sont pas fini après choix du festivalier afficher la salle (ressembler à une autre procédure)
+  // créer une fonction réservation ? 
+  
+
+// A maitrîser : tout ce qui sur le temps + les fichiers (création, sauvegarde)
+// faire attention à tout bien sécuriser à chaque saisie de l'utilisateur pour pas que le programme crashe
+
+
+
+
+int main(){
+  printf("Bienvenue au CY'FEST \n");
+	menuPrincipal();
+	return 0;
+}
+
+
+
+  
