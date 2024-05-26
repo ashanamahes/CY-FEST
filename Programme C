@@ -80,10 +80,12 @@ Salle lireSalleFichier(const char* nomFichier) {
     fscanf(fp, "%s", salle.nom);
     fscanf(fp, "%d", &salle.nbrRangee);
     salle.tabRangee = malloc(salle.nbrRangee * sizeof(Rangee));
-
+    //salle.tabRangee = malloc(salle.nbrRangee * 2* sizeof(Rangee));
+    
     for (int i = 0; i < salle.nbrRangee; i++) {
         fscanf(fp, "%d %c", &salle.tabRangee[i].nbrSiege, &salle.tabRangee[i].categorie);
         salle.tabRangee[i].tabSiege = malloc(salle.tabRangee[i].nbrSiege * sizeof(Siege));
+        printf("%c",salle.tabRangee[i].categorie);
         for (int j = 0; j < salle.tabRangee[i].nbrSiege; j++) {
             fscanf(fp, "%d", &salle.tabRangee[i].tabSiege[j].reservation);
         }
@@ -121,9 +123,10 @@ void afficherSalles() {
         printf("Rangees et sieges:\n");
 
         for (int j = 0; j < salle.nbrRangee; j++) {
+          printf("R %d ", j + 1);
+          printf(" %c ", salle.tabRangee[j].categorie);
             for (int k = 0; k < salle.tabRangee[j].nbrSiege; k++) {
-                printf("R %d ", j + 1);
-                printf(" %c ", salle.tabRangee[j].categorie);
+    
 
                 if (salle.tabRangee[j].tabSiege[k].reservation == 1) {
                     printf("X ");
@@ -189,18 +192,26 @@ Salle creationSalle() {
         }
     } while (catA + catB > a.nbrRangee);
 
+        printf("Veuillez entrer le prix des sieges de categorie A : ");
+        scanf("%f", &a.prixA);
+        printf("Veuillez entrer le prix des sieges de categorie B : ");
+        scanf("%f", &a.prixB);
+        printf("Veuillez entrer le prix des sieges de categorie C : ");
+        scanf("%f", &a.prixC);
+
     for (int i = 0; i < catA; i++) {
         a.tabRangee[i].categorie = 'A';
-        a.tabRangee[i].prixCategorie = 0;
+        a.tabRangee[i].prixCategorie = a.prixA;
     }
     for (int i = catA; i < catB + catA; i++) {
         a.tabRangee[i].categorie = 'B';
-        a.tabRangee[i].prixCategorie = 0;
+        a.tabRangee[i].prixCategorie = a.prixB ;
     }
     for (int i = catB + catA; i < a.nbrRangee; i++) {
         a.tabRangee[i].categorie = 'C';
-        a.tabRangee[i].prixCategorie = 0;
+        a.tabRangee[i].prixCategorie = a.prixC;
     }
+
 
     printf("Votre salle a ete creee avec succes\n");
     char buff[BUFF_TAILLE];
@@ -254,12 +265,7 @@ Concert attribution() {
         fclose(fp);
         printf("Veuillez entrer le nom de l'artiste : ");
         scanf("%s", a.nomArtist);
-        printf("Veuillez entrer le prix des sieges de categorie A : ");
-        scanf("%f", &a.salle.prixA);
-        printf("Veuillez entrer le prix des sieges de categorie B : ");
-        scanf("%f", &a.salle.prixB);
-        printf("Veuillez entrer le prix des sieges de categorie C : ");
-        scanf("%f", &a.salle.prixC);
+      
         a.heureFin = insertTime();
         fp = fopen(buff, "a");
         fprintf(fp, "Nom de l'artiste : %s\n", a.nomArtist);
