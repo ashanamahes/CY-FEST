@@ -169,7 +169,7 @@ Salle creationSalle() {
     }
 
     for (int i = 0; i < a.nbrRangee; i++) {
-        printf("Veuillez entrer le nombre de sieges pour la rangee %d : ", i + 1);
+        printf("Veuillez entrer le nombre de sièges pour la rangée %d : ", i + 1);
         scanf("%d", &a.tabRangee[i].nbrSiege);
         a.tabRangee[i].tabSiege = malloc(a.tabRangee[i].nbrSiege * sizeof(Siege)); // Allocation dynamique de memoire pour les sieges
         if (a.tabRangee[i].tabSiege == NULL) {
