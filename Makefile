@@ -3,21 +3,17 @@
 # Compilateur
 CC=gcc
 
-# Options de compilation
-CFLAGS=-Wall -Wextra
-
 # Nom de l'exécutable
 TARGET=cyfest
 
 # Fichiers source
-SRCS=main.c salle.c reservation.c
-
+SRCS=main.c
 # Règle de compilation principale
 all: $(TARGET)
 
 # Compilation des fichiers objets
 $(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
+	$(CC) $(SRCS) -o $(TARGET) 
 
 # Nettoyage des fichiers temporaires
 clean:
