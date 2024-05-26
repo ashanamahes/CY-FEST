@@ -21,11 +21,15 @@ Pour les managers :
 - modifier les salles
 - observer l'état des salles 
 
-
 ## Installation
 
-1. Clonez le dépôt GitHub :
+### Prérequis
+- [Git](https://git-scm.com/) doit être installé sur votre machine.
+- Un compilateur C comme `gcc`.
 
-```bash
-git clone https://github.com/votreutilisateur/cy-fest.git
-cd cy-fest
+### Étapes d'installation
+
+1. **Cloner le dépôt GitHub** :
+   Ouvrez un terminal et tapez la commande suivante :
+   ```bash
+   git clone https://github.com/ashanamahes/CY-FEST.git
