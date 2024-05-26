@@ -21,14 +21,6 @@ Pour les managers :
 - modifier les salles
 - observer l'état des salles 
 
-## Structure du Projet
-
-- `main.c` : Contient la fonction `main` et le menu principal.
-- `salle.c` : Contient les fonctions liées à la gestion des salles.
-- `reservation.c` : Contient les fonctions liées à la gestion des réservations.
-- `salle.h` : Déclarations des structures et des fonctions utilisées dans `salle.c`.
-- `reservation.h` : Déclarations des structures et des fonctions utilisées dans `reservation.c`.
-
 ## Compilation
 
 ### Prérequis
