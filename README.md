@@ -21,15 +21,34 @@ Pour les managers :
 - modifier les salles
 - observer l'état des salles 
 
-## Installation
+## Structure du Projet
+
+- `main.c` : Contient la fonction `main` et le menu principal.
+- `salle.c` : Contient les fonctions liées à la gestion des salles.
+- `reservation.c` : Contient les fonctions liées à la gestion des réservations.
+- `salle.h` : Déclarations des structures et des fonctions utilisées dans `salle.c`.
+- `reservation.h` : Déclarations des structures et des fonctions utilisées dans `reservation.c`.
+
+## Compilation
 
 ### Prérequis
-- [Git](https://git-scm.com/) doit être installé sur votre machine.
-- Un compilateur C comme `gcc`.
 
-### Étapes d'installation
+- Un compilateur C (comme `gcc`).
+- `make` pour utiliser le Makefile.
 
-1. **Cloner le dépôt GitHub** :
-   Ouvrez un terminal et tapez la commande suivante :
-   ```bash
-   git clone https://github.com/ashanamahes/CY-FEST.git
+### Utilisation du Makefile
+
+Le Makefile fourni permet de compiler facilement le projet. Pour compiler le projet, exécutez les commandes suivantes dans un terminal :
+
+- `make` : Compile tous les fichiers source et génère l'exécutable principal.
+- `make clean` : Supprime les fichiers objets (.o) et l'exécutable pour nettoyer le répertoire de compilation.
+
+
+
+
+
+
+
+
+
+   
